@@ -6,7 +6,11 @@ namespace ThreadSafeEfficientLazyProperty
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("Lazy Expensive Thread-Safe efficient property");
+      Console.WriteLine("Program: starting");
+
+      new MyServiceNaive().DoWork();
+      
+      Console.WriteLine("Program: completed");
     }
   }
 }

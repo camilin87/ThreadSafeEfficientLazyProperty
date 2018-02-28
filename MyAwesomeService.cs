@@ -5,17 +5,11 @@ namespace ThreadSafeEfficientLazyProperty
   public class MyAwesomeService
   {
     private object criticalSection = new object();
-    private Func<ExpensiveObject> expensiveLoad;
+    private Func<ExpensiveObject> expensiveLoadReader;
 
-    public MyAwesomeService()
-    {
-      expensiveLoad = createAndCacheExpensiveLoad;
-    }
+    public MyAwesomeService() => expensiveLoadReader = createAndCacheExpensiveLoad;
 
-    public ExpensiveObject ExpensiveLoad
-    {
-      get { return expensiveLoad(); }
-    }
+    public ExpensiveObject ExpensiveLoad => expensiveLoadReader();
 
     private class ExpensiveObjectFactory
     {
@@ -28,13 +22,13 @@ namespace ThreadSafeEfficientLazyProperty
     {
       lock (criticalSection)
       {
-        if (expensiveLoad == createAndCacheExpensiveLoad)
+        if (expensiveLoadReader == createAndCacheExpensiveLoad)
         {
-          expensiveLoad = new ExpensiveObjectFactory().Build;
+          expensiveLoadReader = new ExpensiveObjectFactory().Build;
         }
       }
       
-      return expensiveLoad();
+      return expensiveLoadReader();
     }
     
     public void DoWork()

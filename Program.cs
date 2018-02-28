@@ -9,6 +9,7 @@ namespace ThreadSafeEfficientLazyProperty
       Console.WriteLine("Program: starting");
 
       new MyServiceNaive().DoWork();
+      new MyLockedService().DoWork();
       
       Console.WriteLine("Program: completed");
     }

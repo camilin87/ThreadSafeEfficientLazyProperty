@@ -20,6 +20,10 @@ namespace ThreadSafeEfficientLazyProperty
       Console.WriteLine("--");
       Console.WriteLine();
 
+      new MySimplifiedAwesomeService().DoWork();
+      Console.WriteLine("--");
+      Console.WriteLine();
+      
       Console.WriteLine("Program: completed");
     }
   }

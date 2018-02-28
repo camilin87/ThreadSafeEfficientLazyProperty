@@ -10,7 +10,7 @@ namespace ThreadSafeEfficientLazyProperty
     {
       Console.WriteLine("ExpensiveObject: Starting creation");
 
-      Thread.Sleep(2000);
+      Thread.Sleep(500);
       
       Console.WriteLine("ExpensiveObject: Completed creation");
     }

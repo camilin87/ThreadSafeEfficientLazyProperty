@@ -4,9 +4,8 @@ namespace ThreadSafeEfficientLazyProperty
 {
   public class MySimplifiedAwesomeService
   {
-    private readonly Func<ExpensiveObject> expensiveLoadReader =
-      new LazyPropertyHelper<ExpensiveObject>(() => new ExpensiveObject()).read;
-    public ExpensiveObject ExpensiveLoad => expensiveLoadReader();
+    private readonly Func<ExpensiveObject> _expensiveLoadReader = LazyPropertyHelper.Create(() => new ExpensiveObject());
+    public ExpensiveObject ExpensiveLoad => _expensiveLoadReader();
     
     public void DoWork()
     {
@@ -19,18 +18,20 @@ namespace ThreadSafeEfficientLazyProperty
     }
   }
 
-  public class LazyPropertyHelper<T>
+  public static class LazyPropertyHelper
   {
-    private readonly Func<T> _initializer;
+    public static Func<T> Create<T>(Func<T> initializer) => new LazyPropertyHelperInternal<T>(initializer).Read;
 
-    public LazyPropertyHelper(Func<T> initializer)
+    private class LazyPropertyHelperInternal<T>
     {
-      _initializer = initializer;
-    }
+      private readonly Func<T> _initializer;
     
-    public T read()
-    {
-      return _initializer();
+      public LazyPropertyHelperInternal(Func<T> initializer) => _initializer = initializer;
+
+      public T Read()
+      {
+        return _initializer();
+      }
     }
   }
 }

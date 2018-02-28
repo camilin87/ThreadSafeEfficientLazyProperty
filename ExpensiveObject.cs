@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Threading;
 
 namespace ThreadSafeEfficientLazyProperty
@@ -7,11 +8,16 @@ namespace ThreadSafeEfficientLazyProperty
   {
     public ExpensiveObject()
     {
-      Console.WriteLine("Starting Expensive object creation");
+      Console.WriteLine("ExpensiveObject: Starting creation");
 
       Thread.Sleep(2000);
       
-      Console.WriteLine("Completed Expensive object creation");
+      Console.WriteLine("ExpensiveObject: Completed creation");
+    }
+
+    public void Move(int from, int to)
+    {
+      Console.WriteLine($"ExpensiveObject: Moving from: {from} to: {to}");
     }
   }
 }

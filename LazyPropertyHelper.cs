@@ -4,44 +4,44 @@ namespace ThreadSafeEfficientLazyProperty
 {
   public static class LazyPropertyHelper
   {
-    public static Func<T> Create<T>(Func<T> initializer) => new LazyPropertyHelperInternal<T>(initializer).Read;
+    public static Func<T> Create<T>(Func<T> expensiveComputation) => new LazyPropertyHelperInternal<T>(expensiveComputation).Read;
 
     private class LazyPropertyHelperInternal<T>
     {
       private readonly object _criticalSection = new object();
-      private Func<T> _expensiveLoadReader;
+      private Func<T> _expensiveComputationReader;
 
-      private readonly Func<T> _initializer;
+      private readonly Func<T> _expensiveComputation;
     
-      public T Read() => ExpensiveLoad;
-      private T ExpensiveLoad => _expensiveLoadReader();
+      public T Read() => ExpensiveComputation;
+      private T ExpensiveComputation => _expensiveComputationReader();
 
-      public LazyPropertyHelperInternal(Func<T> initializer)
+      public LazyPropertyHelperInternal(Func<T> expensiveComputation)
       {
-        _initializer = initializer;
-        _expensiveLoadReader = createAndCacheExpensiveLoad;
+        _expensiveComputation = expensiveComputation;
+        _expensiveComputationReader = CalculateAndCacheExpensiveComputation;
       }     
 
-      private class ExpensiveLoadFactory<T>
+      private class CacheHolder
       {
-        private readonly T result;
+        private readonly T _cachedResult;
 
-        public ExpensiveLoadFactory(Func<T> initializer) => result = initializer();
+        public CacheHolder(Func<T> expensiveComputation) => _cachedResult = expensiveComputation();
 
-        public T Build() => result;
+        public T Read() => _cachedResult;
       }
       
-      private T createAndCacheExpensiveLoad()
+      private T CalculateAndCacheExpensiveComputation()
       {
         lock (_criticalSection)
         {
-          if (_expensiveLoadReader == createAndCacheExpensiveLoad)
+          if (_expensiveComputationReader == CalculateAndCacheExpensiveComputation)
           {
-            _expensiveLoadReader = new ExpensiveLoadFactory<T>(_initializer).Build;
+            _expensiveComputationReader = new CacheHolder(_expensiveComputation).Read;
           }
         }
       
-        return _expensiveLoadReader();
+        return _expensiveComputationReader();
       }
     }
   }

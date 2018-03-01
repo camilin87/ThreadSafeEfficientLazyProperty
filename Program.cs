@@ -24,6 +24,10 @@ namespace ThreadSafeEfficientLazyProperty
       Console.WriteLine("--");
       Console.WriteLine();
       
+      new MyServiceThatUsesLazyPropertyHelperNuget().DoWork();
+      Console.WriteLine("--");
+      Console.WriteLine();
+
       Console.WriteLine("Program: completed");
     }
   }
